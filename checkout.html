@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Your Cart</title>
+    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        .cart-container {
+            background: white;
+            padding: 30px;
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .cart-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 20px;
+        }
+
+        .cart-table th {
+            text-align: left;
+            padding: 15px;
+            border-bottom: 2px solid #eee;
+            color: var(--light-text);
+        }
+
+        .cart-table td {
+            padding: 15px;
+            border-bottom: 1px solid #eee;
+        }
+
+        .grand-total {
+            text-align: right;
+            font-size: 20px;
+            font-weight: 700;
+            margin-top: 20px;
+            color: var(--text-color);
+        }
+
+        .checkout {
+            display: block;
+            width: 100%;
+            padding: 15px;
+            background: var(--primary-color);
+            color: white;
+            text-align: center;
+            border: none;
+            border-radius: var(--radius);
+            font-size: 18px;
+            font-weight: 600;
+            cursor: pointer;
+            margin-top: 20px;
+            transition: background 0.3s;
+        }
+
+        .checkout:hover {
+            background: #e64a00;
+        }
+
+        .delivery-tracker {
+            position: fixed;
+            bottom: 20px;
+            left: 20px;
+            background: white;
+            padding: 15px 20px;
+            border-radius: 8px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+            z-index: 1000;
+            display: none;
+            /* Hidden by default */
+            border-left: 5px solid green;
+            animation: slideIn 0.5s ease-out;
+        }
+
+        .delivery-tracker h4 {
+            margin: 0;
+            color: var(--text-color);
+            font-size: 14px;
+        }
+
+        .delivery-tracker p {
+            margin: 5px 0 0;
+            font-size: 12px;
+            color: #555;
+        }
+
+        .delivery-tracker button {
+            background: none;
+            border: none;
+            color: #aaa;
+            position: absolute;
+            top: 5px;
+            right: 5px;
+            cursor: pointer;
+        }
+    </style>
+</head>
+
+<body>
+
+    <header class="navbar">
+        <div class="logo">
+            <i class="fas fa-utensils"></i> Foodie
+        </div>
+        <nav>
+            <a href="index.html"><i class="fas fa-home"></i> Home</a>
+            <a href="cart.html" class="active"><i class="fas fa-shopping-cart"></i> Cart</a>
+            <a href="profile.html"><i class="fas fa-user-circle"></i> Profile</a>
+        </nav>
+    </header>
+
+    <main>
+        <div class="cart-container">
+            <h2 style="margin-top: 0;">Your Cart</h2>
+
+            <table class="cart-table">
+                <thead>
+                    <tr>
+                        <th>Item</th>
+                        <th>Price</th>
+                        <th>Qty</th>
+                        <th>Total</th>
+                    </tr>
+                </thead>
+                <tbody id="cart-items-body">
+                    <!-- JS Populated -->
+                </tbody>
+            </table>
+
+            <div class="grand-total cart-total-display">
+                Total: ₹0
+            </div>
+
+            <button class="checkout" onclick="window.location.href='checkout.html'">Proceed to Pay</button>
+        </div>
+    </main>
+    <!-- Sticky Delivery Tracker -->
+    <div id="delivery-tracker" class="delivery-tracker">
+        <button onclick="closeTracker()">x</button>
+        <h4><i class="fas fa-motorcycle" style="color:green;"></i> Order on the way!</h4>
+        <p>Arriving by: <strong id="tracker-time">--:--</strong></p>
+    </div>
+
+    <footer>
+        <p>&copy; 2026 Foodie App</p>
+    </footer>
+
+    <script src="script.js"></script>
+    <script>
+        // Initial Render
+        document.addEventListener('DOMContentLoaded', () => {
+            let cartData = JSON.parse(localStorage.getItem('cart')) || [];
+            const tableBody = document.getElementById('cart-items-body');
+            const grandTotalEl = document.querySelector('.cart-total-display');
+
+            if (cartData.length === 0) {
+                tableBody.innerHTML = '<tr><td colspan="4" style="text-align:center;">Your cart is empty! <a href="index.html">Start Ordering</a></td></tr>';
+                grandTotalEl.innerText = "Total: ₹0";
+                return;
+            }
+
+            let total = 0;
+            tableBody.innerHTML = cartData.map(item => {
+                const itemTotal = item.price * item.qty;
+                total += itemTotal;
+                return `
+                <tr>
+                    <td>
+                        <strong>${item.name}</strong><br>
+                        <small style="color:gray">${item.restaurant}</small>
+                    </td>
+                    <td>₹${item.price}</td>
+                    <td>
+                        <button onclick="updateQty(${item.id}, -1)" style="padding:2px 8px;">-</button> 
+                        <span style="margin:0 5px;">${item.qty}</span> 
+                        <button onclick="updateQty(${item.id}, 1)" style="padding:2px 8px;">+</button>
+                    </td>
+                    <td>₹${itemTotal}</td>
+                </tr>
+            `;
+            }).join('');
+
+            grandTotalEl.innerText = `Total: ₹${total}`;
+            localStorage.setItem('cartTotal', total);
+
+            // Check Tracker
+            const activeDelivery = localStorage.getItem('active_delivery');
+            if (activeDelivery) {
+                const tracker = document.getElementById('delivery-tracker');
+                const timeSpan = document.getElementById('tracker-time');
+                timeSpan.innerText = activeDelivery;
+                tracker.style.display = 'block';
+            }
+        });
+
+        function updateQty(id, change) {
+            let cartData = JSON.parse(localStorage.getItem('cart')) || [];
+            const itemIndex = cartData.findIndex(c => c.id === id);
+
+            if (itemIndex > -1) {
+                cartData[itemIndex].qty += change;
+                if (cartData[itemIndex].qty <= 0) {
+                    cartData.splice(itemIndex, 1);
+                }
+                localStorage.setItem('cart', JSON.stringify(cartData));
+                location.reload(); // Simple refresh to update UI
+            }
+        }
+
+        function closeTracker() {
+            document.getElementById('delivery-tracker').style.display = 'none';
+            localStorage.removeItem('active_delivery');
+        }
+    </script>
+
+</body>
+
+</html>

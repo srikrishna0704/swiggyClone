@@ -1,0 +1,497 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Profile</title>
+    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        /* [Previous styles kept] */
+        .profile-card {
+            background: white;
+            max-width: 600px;
+            margin: 0 auto;
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+            overflow: hidden;
+            text-align: center;
+        }
+
+        .cover-photo {
+            height: 120px;
+            background: linear-gradient(135deg, #ff9966, #ff5e62);
+        }
+
+        .profile-img-container {
+            margin-top: -60px;
+            position: relative;
+            display: inline-block;
+        }
+
+        .profile-img {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            border: 4px solid white;
+            object-fit: cover;
+            background: #eee;
+        }
+
+        .profile-info {
+            padding: 20px;
+        }
+
+        .profile-info h2 {
+            margin: 10px 0 5px;
+            color: var(--text-color);
+        }
+
+        .role {
+            color: var(--primary-color);
+            font-weight: 600;
+            font-size: 14px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .bio {
+            color: var(--light-text);
+            margin: 15px 0;
+            line-height: 1.5;
+        }
+
+        .stats {
+            display: flex;
+            justify-content: center;
+            gap: 30px;
+            margin: 20px 0;
+            border-top: 1px solid #eee;
+            padding-top: 20px;
+        }
+
+        .stat-item {
+            text-align: center;
+        }
+
+        .stat-value {
+            display: block;
+            font-size: 20px;
+            font-weight: 700;
+            color: var(--text-color);
+        }
+
+        .stat-label {
+            font-size: 12px;
+            color: var(--light-text);
+            text-transform: uppercase;
+        }
+
+        .edit-btn {
+            background: var(--text-color);
+            color: white;
+            padding: 10px 25px;
+            border-radius: 50px;
+            border: none;
+            cursor: pointer;
+            font-weight: 600;
+            transition: 0.3s;
+        }
+
+        .edit-btn:hover {
+            opacity: 0.9;
+            transform: translateY(-2px);
+        }
+
+        /* Edit Form Styles */
+        #edit-form {
+            display: none;
+            text-align: left;
+            margin-top: 20px;
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        .form-group label {
+            display: block;
+            font-weight: 600;
+            margin-bottom: 5px;
+            color: var(--text-color);
+        }
+
+        .form-group input,
+        .form-group textarea {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            font-family: inherit;
+            box-sizing: border-box;
+        }
+
+        .form-actions {
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+            margin-top: 20px;
+        }
+
+        .save-btn {
+            background: var(--primary-color);
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 6px;
+            cursor: pointer;
+        }
+
+        .cancel-btn {
+            background: #ccc;
+            color: #333;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 6px;
+            cursor: pointer;
+        }
+
+        /* Address Section */
+        .address-section {
+            text-align: left;
+            margin: 20px 0;
+            padding: 15px;
+            background: #fdfdfd;
+            border: 1px solid #eee;
+            border-radius: 8px;
+        }
+
+        .address-section h3 {
+            font-size: 16px;
+            margin-bottom: 5px;
+            color: var(--primary-color);
+        }
+
+        .address-text {
+            color: #555;
+            font-size: 14px;
+        }
+
+        /* Order History Styles */
+        .order-history {
+            margin-top: 30px;
+            text-align: left;
+            border-top: 1px solid #eee;
+            padding-top: 20px;
+        }
+
+        .order-history h3 {
+            font-size: 18px;
+            margin-bottom: 15px;
+            color: var(--text-color);
+        }
+
+        .order-card {
+            background: #f9f9f9;
+            border-radius: 8px;
+            padding: 15px;
+            margin-bottom: 15px;
+            border: 1px solid #eee;
+        }
+
+        .order-header {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 10px;
+            font-weight: 600;
+            font-size: 14px;
+            color: #555;
+        }
+
+        .order-items {
+            font-size: 14px;
+            color: #777;
+            margin-left: 10px;
+        }
+
+        .order-total {
+            text-align: right;
+            font-weight: 700;
+            color: var(--primary-color);
+            margin-top: 5px;
+        }
+
+        .delivery-tracker {
+            position: fixed;
+            bottom: 20px;
+            left: 20px;
+            background: white;
+            padding: 15px 20px;
+            border-radius: 8px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+            z-index: 1000;
+            display: none;
+            /* Hidden by default */
+            border-left: 5px solid green;
+            animation: slideIn 0.5s ease-out;
+        }
+
+        .delivery-tracker h4 {
+            margin: 0;
+            color: var(--text-color);
+            font-size: 14px;
+        }
+
+        .delivery-tracker p {
+            margin: 5px 0 0;
+            font-size: 12px;
+            color: #555;
+        }
+
+        .delivery-tracker button {
+            background: none;
+            border: none;
+            color: #aaa;
+            position: absolute;
+            top: 5px;
+            right: 5px;
+            cursor: pointer;
+        }
+    </style>
+</head>
+
+<body>
+
+    <header class="navbar">
+        <div class="logo">
+            <i class="fas fa-utensils"></i> Foodie
+        </div>
+        <nav>
+            <a href="index.html"><i class="fas fa-home"></i> Home</a>
+            <a href="cart.html"><i class="fas fa-shopping-cart"></i> Cart</a>
+            <a href="profile.html" class="active"><i class="fas fa-user-circle"></i> Profile</a>
+        </nav>
+    </header>
+
+    <main>
+        <div class="profile-card">
+            <div class="cover-photo"></div>
+
+            <div class="profile-img-container">
+                <img src="https://via.placeholder.com/150" alt="Profile" class="profile-img" id="display-img">
+            </div>
+
+            <div class="profile-info">
+                <!-- Display Mode -->
+                <div id="display-info">
+                    <h2 id="display-name">Chaitu</h2>
+                    <span class="role" id="display-role">Food Lover</span>
+                    <p class="bio" id="display-bio">Passionate about trying new recipes and exploring different
+                        cuisines. Always hungry!</p>
+
+                    <div class="address-section">
+                        <h3><i class="fas fa-map-marker-alt"></i> Delivery Address</h3>
+                        <p class="address-text" id="display-address">No address set. Click 'Edit Profile' to add one.
+                        </p>
+                    </div>
+
+                    <div class="stats">
+                        <div class="stat-item">
+                            <span class="stat-value" id="order-count-display">0</span>
+                            <span class="stat-label">Orders</span>
+                        </div>
+                        <div class="stat-item">
+                            <span class="stat-value">15</span>
+                            <span class="stat-label">Reviews</span>
+                        </div>
+                        <div class="stat-item">
+                            <span class="stat-value">8</span>
+                            <span class="stat-label">Favorites</span>
+                        </div>
+                    </div>
+
+                    <button class="edit-btn" onclick="toggleEdit()">Edit Profile</button>
+
+                    <!-- Order History Section -->
+                    <div class="order-history">
+                        <h3>Previous Orders</h3>
+                        <div id="orders-container">
+                            <p style="color:#aaa; font-style:italic;">No past orders yet.</p>
+                        </div>
+                    </div>
+
+                </div>
+
+                <!-- Edit Mode -->
+                <div id="edit-form">
+                    <div class="form-group">
+                        <label>Profile Photo</label>
+                        <input type="file" id="photo-upload" accept="image/*">
+                    </div>
+                    <div class="form-group">
+                        <label>Name</label>
+                        <input type="text" id="edit-name" value="Chaitu">
+                    </div>
+                    <div class="form-group">
+                        <label>Role</label>
+                        <input type="text" id="edit-role" value="Food Lover">
+                    </div>
+                    <div class="form-group">
+                        <label>Bio</label>
+                        <textarea id="edit-bio"
+                            rows="3">Passionate about trying new recipes and exploring different cuisines. Always hungry!</textarea>
+                    </div>
+                    <div class="form-group">
+                        <label>Address</label>
+                        <textarea id="edit-address" rows="3" placeholder="Enter your full delivery address"></textarea>
+                    </div>
+                    <div class="form-actions">
+                        <button class="save-btn" onclick="saveProfile()">Save Changes</button>
+                        <button class="cancel-btn" onclick="toggleEdit()">Cancel</button>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </main>
+
+    <!-- Sticky Delivery Tracker -->
+    <div id="delivery-tracker" class="delivery-tracker">
+        <button onclick="closeTracker()">x</button>
+        <h4><i class="fas fa-motorcycle" style="color:green;"></i> Order on the way!</h4>
+        <p>Arriving by: <strong id="tracker-time">--:--</strong></p>
+    </div>
+
+    <footer>
+        <p>&copy; 2026 Foodie App</p>
+    </footer>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            loadProfile();
+            loadOrders();
+
+            // Check Tracker
+            const activeDelivery = localStorage.getItem('active_delivery');
+            if (activeDelivery) {
+                const tracker = document.getElementById('delivery-tracker');
+                const timeSpan = document.getElementById('tracker-time');
+                timeSpan.innerText = activeDelivery;
+                tracker.style.display = 'block';
+            }
+        });
+
+        function loadProfile() {
+            const savedName = localStorage.getItem('profile_name');
+            const savedRole = localStorage.getItem('profile_role');
+            const savedBio = localStorage.getItem('profile_bio');
+            const savedImg = localStorage.getItem('profile_img');
+            const savedAddress = localStorage.getItem('profile_address') || "No address set. Click 'Edit Profile' to add one.";
+
+            if (savedName) {
+                document.getElementById('display-name').textContent = savedName;
+                document.getElementById('edit-name').value = savedName;
+            }
+            if (savedRole) {
+                document.getElementById('display-role').textContent = savedRole;
+                document.getElementById('edit-role').value = savedRole;
+            }
+            if (savedBio) {
+                document.getElementById('display-bio').textContent = savedBio;
+                document.getElementById('edit-bio').value = savedBio;
+            }
+            if (savedImg) {
+                document.getElementById('display-img').src = savedImg;
+            }
+
+            document.getElementById('display-address').textContent = savedAddress;
+            document.getElementById('edit-address').value = savedAddress !== "No address set. Click 'Edit Profile' to add one." ? savedAddress : "";
+        }
+
+        function loadOrders() {
+            const orders = JSON.parse(localStorage.getItem('orders')) || [];
+            const container = document.getElementById('orders-container');
+
+            document.getElementById('order-count-display').innerText = orders.length;
+
+            if (orders.length === 0) {
+                container.innerHTML = '<p style="color:#aaa; font-style:italic;">No past orders yet.</p>';
+                return;
+            }
+
+            container.innerHTML = orders.map(order => {
+                const itemSummary = order.items.map(i => `${i.qty} x ${i.name}`).join(', ');
+                return `
+                    <div class="order-card">
+                        <div class="order-header">
+                            <span>#${order.id.toString().slice(-6)}</span>
+                            <span>${order.date}</span>
+                        </div>
+                        <div class="order-items">
+                            ${itemSummary}
+                        </div>
+                        <div class="order-total">
+                            Total: ₹${order.total}
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        function toggleEdit() {
+            const displayDiv = document.getElementById('display-info');
+            const formDiv = document.getElementById('edit-form');
+
+            if (displayDiv.style.display === 'none') {
+                displayDiv.style.display = 'block';
+                formDiv.style.display = 'none';
+            } else {
+                displayDiv.style.display = 'none';
+                formDiv.style.display = 'block';
+            }
+        }
+
+        function saveProfile() {
+            const name = document.getElementById('edit-name').value;
+            const role = document.getElementById('edit-role').value;
+            const bio = document.getElementById('edit-bio').value;
+            const address = document.getElementById('edit-address').value;
+            const photoInput = document.getElementById('photo-upload');
+
+            document.getElementById('display-name').textContent = name;
+            document.getElementById('display-role').textContent = role;
+            document.getElementById('display-bio').textContent = bio;
+            document.getElementById('display-address').textContent = address || "No address set.";
+
+            localStorage.setItem('profile_name', name);
+            localStorage.setItem('profile_role', role);
+            localStorage.setItem('profile_bio', bio);
+            localStorage.setItem('profile_address', address);
+
+            if (photoInput.files && photoInput.files[0]) {
+                const reader = new FileReader();
+                reader.onload = function (e) {
+                    const imgData = e.target.result;
+                    document.getElementById('display-img').src = imgData;
+                    try {
+                        localStorage.setItem('profile_img', imgData);
+                    } catch (err) {
+                        alert("Image is too large to save permanently.");
+                    }
+                }
+                reader.readAsDataURL(photoInput.files[0]);
+            }
+
+            toggleEdit();
+        }
+
+        function closeTracker() {
+            document.getElementById('delivery-tracker').style.display = 'none';
+            localStorage.removeItem('active_delivery');
+        }
+    </script>
+</body>
+
+</html>

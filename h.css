@@ -1,0 +1,156 @@
+/* General Reset */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: 'Poppins', sans-serif;
+}
+
+/* Body Styling */
+body {
+  background: linear-gradient(135deg, #00feba, #5b548a);
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 20px;
+}
+
+/* Card Container */
+.card {
+  background: #fff;
+  border-radius: 20px;
+  padding: 20px;
+  width: 100%;
+  max-width: 400px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+  text-align: center;
+}
+
+/* Search Bar */
+.search {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 20px;
+}
+
+.search input {
+  border: 0;
+  outline: 0;
+  background: #ebfffc;
+  color: #555;
+  padding: 10px 20px;
+  height: 50px;
+  border-radius: 25px;
+  flex: 1;
+  margin-right: 10px;
+  font-size: 16px;
+}
+
+.search button {
+  border: 0;
+  outline: 0;
+  background: #ebfffc;
+  border-radius: 50%;
+  width: 50px;
+  height: 50px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.search button img {
+  width: 20px;
+}
+
+/* Error Message */
+.error {
+  color: #ff4d4d;
+  font-size: 14px;
+  margin-bottom: 20px;
+  display: none;
+}
+
+/* Weather Section */
+.weather {
+  display: none;
+}
+
+.weather-icon {
+  width: 150px;
+  margin-bottom: 20px;
+}
+
+.temp {
+  font-size: 48px;
+  font-weight: 600;
+  color: #333;
+  margin-bottom: 10px;
+}
+
+.city {
+  font-size: 32px;
+  font-weight: 500;
+  color: #555;
+  margin-bottom: 20px;
+}
+
+.details {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0 20px;
+}
+
+.col {
+  display: flex;
+  align-items: center;
+  text-align: left;
+}
+
+.col img {
+  width: 40px;
+  margin-right: 10px;
+}
+
+.humidity, .wind {
+  font-size: 24px;
+  font-weight: 500;
+  color: #333;
+  margin-bottom: 5px;
+}
+
+.col p {
+  font-size: 14px;
+  color: #777;
+}
+
+/* Responsive Design */
+@media (max-width: 480px) {
+  .card {
+    padding: 15px;
+  }
+
+  .search input {
+    padding: 10px;
+    font-size: 14px;
+  }
+
+  .temp {
+    font-size: 40px;
+  }
+
+  .city {
+    font-size: 28px;
+  }
+
+  .humidity, .wind {
+    font-size: 20px;
+  }
+
+  .col img {
+    width: 30px;
+  }
+}

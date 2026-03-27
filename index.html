@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Foodie - Order & Cook</title>
+    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        .delivery-tracker {
+            position: fixed;
+            bottom: 20px;
+            left: 20px;
+            background: white;
+            padding: 15px 20px;
+            border-radius: 8px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+            z-index: 1000;
+            display: none;
+            /* Hidden by default */
+            border-left: 5px solid green;
+            animation: slideIn 0.5s ease-out;
+        }
+
+        .delivery-tracker h4 {
+            margin: 0;
+            color: var(--text-color);
+            font-size: 14px;
+        }
+
+        .delivery-tracker p {
+            margin: 5px 0 0;
+            font-size: 12px;
+            color: #555;
+        }
+
+        .delivery-tracker button {
+            background: none;
+            border: none;
+            color: #aaa;
+            position: absolute;
+            top: 5px;
+            right: 5px;
+            cursor: pointer;
+        }
+
+        @keyframes slideIn {
+            from {
+                transform: translateX(-100%);
+                opacity: 0;
+            }
+
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <header class="navbar">
+        <div class="logo">
+            <i class="fas fa-utensils"></i> Foodie
+        </div>
+        <div class="search-bar">
+            <i class="fas fa-search"></i>
+            <input type="text" placeholder="Search for food, recipes...">
+        </div>
+        <nav>
+            <a href="index.html" class="active"><i class="fas fa-home"></i> Home</a>
+            <a href="cart.html"><i class="fas fa-shopping-cart"></i> Cart</a>
+            <a href="profile.html"><i class="fas fa-user-circle"></i> Profile</a>
+        </nav>
+    </header>
+
+    <main>
+        <section class="hero">
+            <div class="hero-content">
+                <h1>Delicious Food, Delivered To You</h1>
+                <p>Order or cook it yourself with our secret recipes.</p>
+            </div>
+        </section>
+
+        <section class="categories">
+            <div class="chip active">All</div>
+            <div class="chip">Breakfast</div>
+            <div class="chip">Lunch</div>
+            <div class="chip">Dinner</div>
+            <div class="chip">Snacks</div>
+            <div class="chip">Juices</div>
+            <div class="chip">Offers</div>
+        </section>
+
+        <h2 class="section-title">Popular Recipes & Items</h2>
+
+        <section id="food-container" class="recipes-grid">
+            <!-- JS will populate this -->
+        </section>
+
+    </main>
+
+    <!-- Sticky Delivery Tracker -->
+    <div id="delivery-tracker" class="delivery-tracker">
+        <button onclick="closeTracker()">x</button>
+        <h4><i class="fas fa-motorcycle" style="color:green;"></i> Order on the way!</h4>
+        <p>Arriving by: <strong id="tracker-time">--:--</strong></p>
+    </div>
+
+    <footer>
+        <p>&copy; 2026 Foodie App. Made with <i class="fas fa-heart"></i></p>
+    </footer>
+
+    <script src="script.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            // Categories Logic
+            const chips = document.querySelectorAll('.chip');
+            chips.forEach(chip => {
+                chip.addEventListener('click', () => {
+                    chips.forEach(c => c.classList.remove('active'));
+                    chip.classList.add('active');
+                    const result = chip.innerText.toLowerCase();
+
+                    let filterKey = result;
+                    if (result === 'offers') filterKey = 'offers';
+                    if (result === 'juices') filterKey = 'juices';
+
+                    if (typeof foodItems !== 'undefined') {
+                        if (result === 'all') {
+                            renderHomePage(foodItems);
+                        } else {
+                            const filtered = foodItems.filter(item => item.mealType.includes(filterKey));
+                            renderHomePage(filtered);
+                        }
+                    }
+                });
+            });
+
+            // Delivery Tracker Logic
+            const activeDelivery = localStorage.getItem('active_delivery');
+            if (activeDelivery) {
+                const tracker = document.getElementById('delivery-tracker');
+                const timeSpan = document.getElementById('tracker-time');
+
+                // Check if delivery time has passed (simple logic)
+                // In a real app, compare Date objects. Here we just show it.
+                timeSpan.innerText = activeDelivery;
+                tracker.style.display = 'block';
+
+                // Auto-hide after 1 minute for demo purposes or keep it persistent?
+                // Let's keep it persistent until user closes it.
+            }
+        });
+
+        function closeTracker() {
+            document.getElementById('delivery-tracker').style.display = 'none';
+            localStorage.removeItem('active_delivery'); // Clear it so it doesn't show again
+        }
+    </script>
+
+</body>
+
+</html>
